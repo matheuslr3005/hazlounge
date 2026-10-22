@@ -52,9 +52,9 @@ export const events: LoungeEvent[] = [
 ]
 
 export const eventImage: Record<EventKind, string> = {
-  pizza: '/images/pizza-night.png',
-  sushi: '/images/sushi-night.png',
-  burger: '/images/burger-night.png',
+  pizza: `${import.meta.env.BASE_URL}images/pizza-night.png`,
+  sushi: `${import.meta.env.BASE_URL}images/sushi-night.png`,
+  burger: `${import.meta.env.BASE_URL}images/burger-night.png`,
 }
 
 const WEEKDAYS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
