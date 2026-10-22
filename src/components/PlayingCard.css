@@ -1,0 +1,101 @@
+.pcard {
+  --w: 78px;
+  position: relative;
+  flex: none;
+  width: var(--w);
+  aspect-ratio: 0.714;
+  border-radius: calc(var(--w) * 0.09);
+  background: linear-gradient(145deg, #fbf6ea, #ebe2cb);
+  color: #15151a;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 24px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(40, 30, 10, 0.35);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  user-select: none;
+  transition:
+    transform 0.4s var(--ease),
+    filter 0.4s var(--ease),
+    opacity 0.4s var(--ease);
+}
+
+.pcard--sm {
+  --w: 54px;
+}
+
+.pcard--md {
+  --w: 78px;
+}
+
+.pcard--lg {
+  --w: clamp(96px, 14vw, 150px);
+}
+
+.pcard.is-red {
+  color: #b3202a;
+}
+
+.pcard.is-dim {
+  filter: brightness(0.45) saturate(0.7);
+}
+
+.pcard__corner {
+  position: absolute;
+  top: calc(var(--w) * 0.07);
+  left: calc(var(--w) * 0.09);
+  display: grid;
+  justify-items: center;
+  font-size: calc(var(--w) * 0.26);
+  line-height: 1;
+}
+
+.pcard__corner i {
+  font-style: normal;
+  font-size: 0.8em;
+  margin-top: 0.05em;
+}
+
+.pcard__corner--end {
+  top: auto;
+  left: auto;
+  right: calc(var(--w) * 0.09);
+  bottom: calc(var(--w) * 0.07);
+  transform: rotate(180deg);
+}
+
+.pcard__pip {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--w) * 0.56);
+  line-height: 1;
+  padding-top: 0.06em;
+}
+
+.pcard--back {
+  background:
+    repeating-linear-gradient(45deg, transparent 0 9px, rgba(232, 184, 75, 0.22) 9px 10px),
+    repeating-linear-gradient(-45deg, transparent 0 9px, rgba(232, 184, 75, 0.22) 9px 10px), #0b0b0c;
+  box-shadow:
+    0 0 0 1px rgba(168, 119, 31, 0.9),
+    0 0 0 4px #0b0b0c inset,
+    0 0 0 5px rgba(232, 184, 75, 0.7) inset,
+    0 14px 24px -12px rgba(0, 0, 0, 0.8);
+  display: grid;
+  place-items: center;
+}
+
+.pcard__logo {
+  display: grid;
+  place-items: center;
+  width: 64%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #0b0b0c;
+  border: 1.5px solid var(--gold);
+  color: var(--gold);
+  font-size: calc(var(--w) * 0.2);
+  letter-spacing: 0.04em;
+}

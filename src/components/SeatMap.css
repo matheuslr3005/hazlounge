@@ -1,0 +1,84 @@
+.seatmap {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.seatmap__logo {
+  font-family: var(--font-display);
+  font-size: 82px;
+  font-weight: 900;
+  fill: rgba(232, 184, 75, 0.1);
+}
+
+.seatmap__dealer circle {
+  fill: #f3ead2;
+  stroke: var(--gold-deep);
+  stroke-width: 3;
+}
+
+.seatmap__dealer text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  fill: #16120a;
+}
+
+.seatmap__seat {
+  cursor: pointer;
+  outline: none;
+}
+
+.seatmap__seat circle {
+  fill: rgba(7, 7, 7, 0.85);
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  transition:
+    fill 0.3s,
+    stroke 0.3s,
+    filter 0.3s;
+}
+
+.seatmap__seat text {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--gold-hi);
+  pointer-events: none;
+  transition: fill 0.3s;
+}
+
+.seatmap__seat.is-free:hover circle,
+.seatmap__seat:focus-visible circle {
+  fill: rgba(232, 184, 75, 0.22);
+  filter: drop-shadow(0 0 8px rgba(232, 184, 75, 0.6));
+}
+
+.seatmap__seat.is-selected circle {
+  fill: var(--gold);
+  stroke: var(--gold-hi);
+  filter: drop-shadow(0 0 12px rgba(232, 184, 75, 0.85));
+}
+
+.seatmap__seat.is-selected text {
+  fill: #120d02;
+}
+
+.seatmap__seat.is-taken,
+.seatmap__seat.is-blocked {
+  cursor: not-allowed;
+}
+
+.seatmap__seat.is-taken circle {
+  fill: rgba(60, 50, 30, 0.6);
+  stroke: rgba(232, 184, 75, 0.2);
+}
+
+.seatmap__seat.is-taken text {
+  font-size: 20px;
+  fill: rgba(244, 236, 217, 0.3);
+}
+
+.seatmap__seat.is-blocked {
+  opacity: 0.4;
+}

@@ -1,0 +1,683 @@
+.reserve {
+  background:
+    radial-gradient(60% 50% at 10% 100%, rgba(18, 80, 63, 0.3), transparent 70%),
+    radial-gradient(50% 40% at 90% 0%, rgba(232, 184, 75, 0.08), transparent 70%), var(--bg);
+}
+
+.booking {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: clamp(20px, 3.4vw, 56px);
+  align-items: start;
+}
+
+.booking__main {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.booking__aside {
+  position: sticky;
+  top: calc(var(--nav-h) + 20px);
+  display: grid;
+  gap: 18px;
+}
+
+/* -------------------------------- steps ---------------------------------- */
+
+.steps {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--line-soft);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition:
+    color 0.3s,
+    border-color 0.3s;
+}
+
+.steps li span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 11px;
+}
+
+.steps li svg {
+  font-size: 14px;
+}
+
+.steps li.is-active {
+  color: var(--gold-hi);
+  border-color: var(--gold);
+}
+
+.steps li.is-active span {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #111;
+}
+
+.steps li.is-done {
+  color: var(--gold-deep);
+  border-color: var(--gold-deep);
+}
+
+/* -------------------------------- panels --------------------------------- */
+
+.panel {
+  display: grid;
+  gap: 22px;
+  padding: clamp(20px, 3vw, 38px);
+  border: 1px solid var(--line-soft);
+  background: linear-gradient(180deg, rgba(20, 20, 17, 0.85), rgba(9, 9, 8, 0.85));
+}
+
+.panel__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 700;
+}
+
+.panel__title small {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.panel__note {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.panel__empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.event-pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 8px;
+}
+
+.event-pills button {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-soft);
+  background: rgba(7, 7, 7, 0.5);
+  text-align: left;
+  transition:
+    border-color 0.3s,
+    background 0.3s;
+}
+
+.event-pills small {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.event-pills strong {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.event-pills button:hover {
+  border-color: var(--line);
+}
+
+.event-pills button.is-active {
+  border-color: var(--gold);
+  background: rgba(232, 184, 75, 0.1);
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  margin: -8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+}
+
+.legend i.is-selected {
+  background: var(--gold);
+}
+
+.legend i.is-taken {
+  border-color: rgba(232, 184, 75, 0.2);
+  background: rgba(60, 50, 30, 0.6);
+}
+
+/* -------------------------------- fields --------------------------------- */
+
+.fields {
+  display: grid;
+  gap: 18px;
+}
+
+.fields--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field__label {
+  padding: 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: 2px;
+  background: rgba(7, 7, 7, 0.7);
+  color: var(--ink);
+  font-size: 15px;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+  color-scheme: dark;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(154, 146, 127, 0.6);
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--line);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 184, 75, 0.15);
+}
+
+.field.has-error input {
+  border-color: var(--red);
+}
+
+.field__hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field.has-error .field__hint {
+  color: #ef8d95;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pills button {
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(7, 7, 7, 0.5);
+  font-size: 13px;
+  color: rgba(244, 236, 217, 0.8);
+  transition:
+    border-color 0.3s,
+    background 0.3s,
+    color 0.3s;
+}
+
+.pills button:hover {
+  border-color: var(--line);
+}
+
+.pills button.is-active {
+  border-color: var(--gold);
+  background: rgba(232, 184, 75, 0.14);
+  color: var(--gold-hi);
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid var(--line-soft);
+}
+
+.stepper button {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  color: var(--gold);
+  transition: background 0.3s;
+}
+
+.stepper button:hover {
+  background: rgba(232, 184, 75, 0.1);
+}
+
+.stepper output {
+  min-width: 64px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* ------------------------------- payments -------------------------------- */
+
+.pay {
+  display: grid;
+  gap: 8px;
+}
+
+.pay button {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--line-soft);
+  background: rgba(7, 7, 7, 0.5);
+  text-align: left;
+  transition:
+    border-color 0.3s,
+    background 0.3s;
+}
+
+.pay button:hover {
+  border-color: var(--line);
+}
+
+.pay button.is-active {
+  border-color: var(--gold);
+  background: rgba(232, 184, 75, 0.09);
+}
+
+.pay__dot {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  position: relative;
+}
+
+.pay button.is-active .pay__dot::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.pay strong {
+  display: block;
+  font-size: 15px;
+}
+
+.pay small {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.pix {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.pix svg {
+  border: 6px solid #f4ecd9;
+  border-radius: 4px;
+}
+
+.pix__amount {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--gold-hi);
+}
+
+.pix__code {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--gold-hi);
+  word-break: break-all;
+}
+
+/* -------------------------------- ticket --------------------------------- */
+
+.panel--done {
+  justify-items: center;
+  text-align: center;
+}
+
+.panel--done .panel__actions {
+  justify-content: center;
+}
+
+.done__badge {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  font-size: 30px;
+  color: var(--gold);
+  box-shadow: 0 0 40px -6px rgba(232, 184, 75, 0.6);
+}
+
+.panel--done .display {
+  font-size: clamp(30px, 4vw, 48px);
+}
+
+.ticket {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+  max-width: 560px;
+  text-align: left;
+  background: linear-gradient(135deg, #17140c, #0b0a08);
+}
+
+.ticket__main {
+  display: grid;
+  gap: 10px;
+  padding: 22px 24px;
+}
+
+.ticket__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.ticket h4 {
+  font-size: 46px;
+  line-height: 0.95;
+}
+
+.ticket dl {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0 0;
+}
+
+.ticket dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 13.5px;
+}
+
+.ticket dt {
+  color: var(--muted);
+}
+
+.ticket dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ticket__stub {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 20px;
+  border-left: 1px dashed var(--line);
+}
+
+.ticket__stub svg {
+  border: 4px solid #f4ecd9;
+}
+
+.ticket__stub strong {
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  color: var(--gold-hi);
+}
+
+/* --------------------------------- aside --------------------------------- */
+
+.chip-stage {
+  position: relative;
+  aspect-ratio: 1.15;
+  border: 1px solid var(--line-soft);
+  background:
+    radial-gradient(60% 60% at 50% 55%, rgba(232, 184, 75, 0.16), transparent 70%), rgba(10, 10, 9, 0.7);
+  cursor: grab;
+  overflow: hidden;
+}
+
+.chip-stage:active {
+  cursor: grabbing;
+}
+
+.chip-stage canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.chip-stage__hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.summary {
+  display: grid;
+  gap: 8px;
+  padding: 22px 24px;
+  background: rgba(10, 10, 9, 0.8);
+}
+
+.summary h4 {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.summary__date {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.summary dl {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+}
+
+.summary dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 14px;
+}
+
+.summary dt {
+  color: var(--muted);
+}
+
+.summary dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.summary__total dd {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.summary__warn {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--gold);
+}
+
+.summary__steps {
+  display: grid;
+  gap: 12px;
+  margin: 6px 0 0;
+  padding-left: 18px;
+  font-size: 14px;
+  color: rgba(244, 236, 217, 0.8);
+}
+
+.summary__steps li::marker {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .booking {
+    grid-template-columns: 1fr;
+  }
+
+  .booking__aside {
+    position: static;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+
+  .chip-stage {
+    aspect-ratio: auto;
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking__aside {
+    grid-template-columns: 1fr;
+  }
+
+  .chip-stage {
+    aspect-ratio: 1.5;
+  }
+
+  .fields--two {
+    grid-template-columns: 1fr;
+  }
+
+  .steps li {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .pix {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .ticket {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket__stub {
+    border-left: 0;
+    border-top: 1px dashed var(--line);
+  }
+}

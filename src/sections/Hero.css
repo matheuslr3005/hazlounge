@@ -1,0 +1,147 @@
+.hero {
+  position: relative;
+  z-index: 2;
+  height: 230svh;
+  background: #040302;
+}
+
+.hero__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.hero__canvas,
+.hero__canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(4, 3, 2, 0.88) 0%, rgba(4, 3, 2, 0.55) 34%, transparent 58%);
+}
+
+.hero__copy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: var(--nav-h) var(--gutter) 0;
+  pointer-events: none;
+}
+
+.hero__stack {
+  display: grid;
+  gap: clamp(12px, 2vh, 22px);
+  justify-items: start;
+  max-width: min(560px, 100%);
+}
+
+.hero__stack a {
+  pointer-events: auto;
+}
+
+.hero__logo {
+  width: clamp(140px, 15vw, 200px);
+  color: #fff;
+}
+
+.hero__logo svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.7));
+}
+
+.hero__title {
+  font-size: clamp(42px, 6vw, 92px);
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+}
+
+.hero__lead {
+  max-width: 46ch;
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: rgba(244, 236, 217, 0.82);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.hero__scroll {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(18px, 4vh, 38px);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gold);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+.hero__scroll i {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  transform-origin: left;
+  animation: hero-drip 2.2s var(--ease) infinite;
+}
+
+@keyframes hero-drip {
+  0% {
+    transform: scaleX(0);
+  }
+  60% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero__shade {
+    background: linear-gradient(180deg, rgba(4, 3, 2, 0.9) 0%, rgba(4, 3, 2, 0.62) 40%, transparent 66%);
+  }
+
+  .hero__copy {
+    align-items: flex-start;
+    padding-top: calc(var(--nav-h) + 6px);
+  }
+
+  .hero__logo {
+    width: 112px;
+  }
+
+  .hero__title {
+    font-size: clamp(36px, 11vw, 54px);
+  }
+
+  .hero__lead {
+    display: none;
+  }
+
+  .hero__scroll {
+    left: 0;
+    right: 0;
+    justify-content: center;
+  }
+
+  .hero__scroll i {
+    display: none;
+  }
+}
