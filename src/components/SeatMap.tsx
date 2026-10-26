@@ -23,13 +23,13 @@ export const SeatMap = ({ taken, selected, maxSelectable, onToggle }: SeatMapPro
     <defs>
       <radialGradient id="seat-felt" cx="50%" cy="50%" r="60%">
         <stop offset="0%" stopColor="#136148" />
-        <stop offset="60%" stopColor="#0b3a2d" />
+        <stop offset="60%" stopColor="#1d3a2f" />
         <stop offset="100%" stopColor="#06231b" />
       </radialGradient>
     </defs>
 
-    <rect x="92" y="62" width="456" height="216" rx="108" fill="#15100b" stroke="rgba(232,184,75,0.5)" strokeWidth="1.5" />
-    <rect x="106" y="76" width="428" height="188" rx="94" fill="url(#seat-felt)" stroke="rgba(232,184,75,0.7)" strokeWidth="1" />
+    <rect x="92" y="62" width="456" height="216" rx="108" fill="#15100b" stroke="rgba(196,164,114,0.5)" strokeWidth="1.5" />
+    <rect x="106" y="76" width="428" height="188" rx="94" fill="url(#seat-felt)" stroke="rgba(196,164,114,0.7)" strokeWidth="1" />
     <text x={VIEW_W / 2} y={VIEW_H / 2 + 14} textAnchor="middle" className="seatmap__logo">
       HAZ
     </text>

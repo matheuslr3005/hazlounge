@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { AcePattern } from '../components/AcePattern'
 import { ArrowIcon, CheckIcon } from '../components/Icons'
 import { SEAT_TOTAL, SeatMap } from '../components/SeatMap'
 import {
@@ -72,17 +73,17 @@ const PseudoQr = ({ seed, size = 132 }: { seed: string; size?: number }) => {
 
   const Finder = ({ x, y }: { x: number; y: number }) => (
     <g transform={`translate(${x} ${y})`}>
-      <rect width="7" height="7" fill="#070707" />
-      <rect x="1" y="1" width="5" height="5" fill="#f4ecd9" />
-      <rect x="2" y="2" width="3" height="3" fill="#070707" />
+      <rect width="7" height="7" fill="#121110" />
+      <rect x="1" y="1" width="5" height="5" fill="#eee7da" />
+      <rect x="2" y="2" width="3" height="3" fill="#121110" />
     </g>
   )
 
   return (
     <svg viewBox="0 0 25 25" width={size} height={size} role="img" aria-label="QR de demonstração" shapeRendering="crispEdges">
-      <rect width="25" height="25" fill="#f4ecd9" />
+      <rect width="25" height="25" fill="#eee7da" />
       {cells.filter((cell) => cell.on).map((cell) => (
-        <rect key={`${cell.x}-${cell.y}`} x={cell.x} y={cell.y} width="1" height="1" fill="#070707" />
+        <rect key={`${cell.x}-${cell.y}`} x={cell.x} y={cell.y} width="1" height="1" fill="#121110" />
       ))}
       <Finder x={0} y={0} />
       <Finder x={18} y={0} />
@@ -690,11 +691,12 @@ export const Reserve = () => {
 
   return (
     <section id="reservar" className="section reserve">
+      <AcePattern />
       <div className="section__inner">
         <header className="section-head section-head--center">
           <p className="eyebrow">Reservas</p>
           <h2 className="display">
-            Sua cadeira <span className="gold-text">te espera</span>
+            Sente-se. <span className="gold-text">A mesa é sua.</span>
           </h2>
           <p>Garanta uma vaga em um dos eventos ou reserve o lounge inteiro para o seu próprio home game.</p>
         </header>

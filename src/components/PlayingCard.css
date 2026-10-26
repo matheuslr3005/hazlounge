@@ -5,14 +5,14 @@
   width: var(--w);
   aspect-ratio: 0.714;
   border-radius: calc(var(--w) * 0.09);
-  background: linear-gradient(145deg, #fbf6ea, #ebe2cb);
-  color: #15151a;
+  background: linear-gradient(145deg, #f6f2e9, #e9e3d4);
+  color: var(--bg);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.6) inset,
     0 14px 24px -12px rgba(0, 0, 0, 0.8),
     0 0 0 1px rgba(40, 30, 10, 0.35);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 400;
   user-select: none;
   transition:
     transform 0.4s var(--ease),
@@ -33,7 +33,7 @@
 }
 
 .pcard.is-red {
-  color: #b3202a;
+  color: #c23b2e;
 }
 
 .pcard.is-dim {
@@ -76,26 +76,41 @@
 
 .pcard--back {
   background:
-    repeating-linear-gradient(45deg, transparent 0 9px, rgba(232, 184, 75, 0.22) 9px 10px),
-    repeating-linear-gradient(-45deg, transparent 0 9px, rgba(232, 184, 75, 0.22) 9px 10px), #0b0b0c;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='%23eee7da' fill-opacity='.1'%3E%3Cpath transform='translate(3 3) scale(.0284)' d='M176 0 L352 364 L136 364 L0 364Z'/%3E%3Cpath transform='translate(21 21) rotate(180) scale(.0284)' d='M176 0 L352 364 L0 364Z'/%3E%3C/g%3E%3C/svg%3E"),
+    var(--felt);
   box-shadow:
-    0 0 0 1px rgba(168, 119, 31, 0.9),
-    0 0 0 4px #0b0b0c inset,
-    0 0 0 5px rgba(232, 184, 75, 0.7) inset,
+    0 0 0 1px rgba(196, 164, 114, 0.5),
+    0 0 0 4px var(--felt) inset,
+    0 0 0 5px rgba(196, 164, 114, 0.8) inset,
     0 14px 24px -12px rgba(0, 0, 0, 0.8);
   display: grid;
   place-items: center;
 }
 
-.pcard__logo {
+.pcard__seal {
   display: grid;
   place-items: center;
-  width: 64%;
+  width: 58%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #0b0b0c;
+  background: var(--felt);
   border: 1.5px solid var(--gold);
-  color: var(--gold);
-  font-size: calc(var(--w) * 0.2);
-  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.pcard__mark {
+  width: 46%;
+  height: auto;
+  margin-top: 4%;
+}
+
+.pcard__ace {
+  display: block;
+  width: 0.7em;
+  height: auto;
+  color: var(--bg);
+}
+
+.pcard__ace--big {
+  width: 0.9em;
 }

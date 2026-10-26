@@ -24,7 +24,7 @@
   position: relative;
   height: 100%;
   border: 1px solid var(--line-soft);
-  background: linear-gradient(180deg, #11110e, #0a0a09);
+  background: linear-gradient(180deg, #11110e, #161513);
   overflow: hidden;
   transition: border-color 0.4s var(--ease);
 }
@@ -56,7 +56,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 40%, #0a0a09 100%);
+  background: linear-gradient(180deg, transparent 40%, #161513 100%);
 }
 
 .event-card--past .event-card__media img {
@@ -70,7 +70,7 @@
   z-index: 2;
   padding: 5px 12px;
   border: 1px solid var(--line);
-  background: rgba(7, 7, 7, 0.78);
+  background: rgba(18, 17, 16, 0.78);
   backdrop-filter: blur(6px);
   font-size: 10px;
   font-weight: 600;
@@ -80,8 +80,8 @@
 }
 
 .event-card__status.is-live {
-  border-color: #6fd08c;
-  color: #8be8a6;
+  border-color: #7da58f;
+  color: #9fc4af;
 }
 
 .event-card__status.is-live::before {
@@ -91,13 +91,13 @@
   height: 6px;
   margin-right: 8px;
   border-radius: 50%;
-  background: #6fd08c;
-  box-shadow: 0 0 10px #6fd08c;
+  background: #7da58f;
+  box-shadow: 0 0 10px #7da58f;
   animation: pulse 1.4s infinite;
 }
 
 .event-card__status.is-past {
-  border-color: rgba(244, 236, 217, 0.2);
+  border-color: rgba(238, 231, 218, 0.2);
   color: var(--muted);
 }
 
@@ -120,7 +120,7 @@
 }
 
 .event-card__title {
-  font-size: clamp(44px, 4.6vw, 62px);
+  font-size: clamp(52px, 5.2vw, 72px);
   line-height: 0.95;
 }
 
@@ -137,7 +137,7 @@
   padding-top: 14px;
   border-top: 1px solid var(--line-soft);
   font-size: 13px;
-  color: rgba(244, 236, 217, 0.82);
+  color: rgba(238, 231, 218, 0.82);
 }
 
 .event-card__meta span {
@@ -170,7 +170,7 @@
   right: 18px;
   bottom: 16px;
   font-size: 54px;
-  color: rgba(232, 184, 75, 0.12);
+  color: rgba(196, 164, 114, 0.12);
   pointer-events: none;
 }
 
@@ -209,7 +209,7 @@
 }
 
 .upcoming-row__date strong {
-  font-size: 38px;
+  font-size: 46px;
   color: var(--gold-hi);
 }
 
@@ -227,7 +227,7 @@
 }
 
 .upcoming-row__main h3 {
-  font-size: 34px;
+  font-size: 42px;
   line-height: 1;
 }
 
@@ -276,7 +276,7 @@
   font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(244, 236, 217, 0.82);
+  color: rgba(238, 231, 218, 0.82);
 }
 
 .events__perks li + li {

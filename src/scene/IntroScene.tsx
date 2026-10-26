@@ -209,10 +209,10 @@ const Cards = () => {
 /* --------------------------------- props ---------------------------------- */
 
 const STACK_RECIPES: Parameters<typeof ChipStack>[0]['colors'][] = [
-  ['black', 'black', 'gold', 'black', 'red', 'red', 'black', 'gold'],
-  ['red', 'cream', 'red', 'cream', 'red', 'black', 'gold', 'gold', 'black'],
-  ['gold', 'gold', 'black', 'gold', 'black', 'black'],
-  ['cream', 'cream', 'red', 'red', 'cream', 'black', 'black', 'gold', 'black', 'red'],
+  ['black', 'black', 'green', 'black', 'red', 'red', 'black', 'green'],
+  ['red', 'black', 'red', 'black', 'red', 'black', 'green', 'green', 'black'],
+  ['green', 'green', 'black', 'green', 'black', 'black'],
+  ['black', 'black', 'red', 'red', 'black', 'black', 'black', 'green', 'black', 'red'],
 ]
 
 const SeatChips = () => (
@@ -236,8 +236,8 @@ const SeatChips = () => (
         </group>
       )
     })}
-    <ChipStack position={[POT_STACKS[0][0], 0.002, POT_STACKS[0][1]]} colors={['gold', 'black', 'black', 'red']} seed={31} />
-    <ChipStack position={[POT_STACKS[1][0], 0.002, POT_STACKS[1][1]]} colors={['red', 'red', 'cream']} seed={32} />
+    <ChipStack position={[POT_STACKS[0][0], 0.002, POT_STACKS[0][1]]} colors={['green', 'black', 'black', 'red']} seed={31} />
+    <ChipStack position={[POT_STACKS[1][0], 0.002, POT_STACKS[1][1]]} colors={['red', 'red', 'black']} seed={32} />
   </group>
 )
 
@@ -426,8 +426,8 @@ const Lights = () => {
         shadow-blurSamples={16}
       />
       <pointLight ref={warm} position={[0, 3, 8]} color="#ffb870" intensity={0} distance={20} decay={1.7} />
-      <pointLight position={[-8, 2.5, -4]} color="#e8b84b" intensity={16} distance={20} decay={1.6} />
-      <pointLight position={[8, 2.5, -4]} color="#e8b84b" intensity={16} distance={20} decay={1.6} />
+      <pointLight position={[-8, 2.5, -4]} color="#c4a472" intensity={16} distance={20} decay={1.6} />
+      <pointLight position={[8, 2.5, -4]} color="#c4a472" intensity={16} distance={20} decay={1.6} />
     </>
   )
 }
@@ -463,14 +463,14 @@ const Effects = ({ low }: { low: boolean }) => {
 
 const Contents = ({ onProgress, onFinish, low }: DirectorProps & { low: boolean }) => (
   <>
-    <color attach="background" args={['#040302']} />
-    <fog attach="fog" args={['#050403', 14, 38]} />
+    <color attach="background" args={['#0e0d0c']} />
+    <fog attach="fog" args={['#0e0d0c', 14, 38]} />
     <Director onProgress={onProgress} onFinish={onFinish} />
     <Lights />
     <Environment resolution={128} frames={1}>
       <Lightformer form="rect" intensity={2.2} color="#ffd9a0" position={[0, 7, 0]} rotation-x={Math.PI / 2} scale={[12, 6, 1]} />
-      <Lightformer form="rect" intensity={1.1} color="#e8b84b" position={[-9, 2, 1]} rotation-y={Math.PI / 2} scale={[6, 3, 1]} />
-      <Lightformer form="rect" intensity={1.1} color="#e8b84b" position={[9, 2, 1]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
+      <Lightformer form="rect" intensity={1.1} color="#c4a472" position={[-9, 2, 1]} rotation-y={Math.PI / 2} scale={[6, 3, 1]} />
+      <Lightformer form="rect" intensity={1.1} color="#c4a472" position={[9, 2, 1]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
     </Environment>
 
     <mesh rotation-x={-Math.PI / 2} position-y={FLOOR_Y} receiveShadow>

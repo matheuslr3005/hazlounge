@@ -15,7 +15,7 @@
 }
 
 .nav.is-scrolled {
-  background: rgba(7, 7, 7, 0.72);
+  background: rgba(18, 17, 16, 0.72);
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
   border-bottom-color: var(--line-soft);
@@ -25,7 +25,7 @@
   display: block;
   opacity: 0;
   transition: opacity 0.5s var(--ease);
-  color: #fff;
+  color: var(--ink);
   width: 92px;
   flex: none;
 }
@@ -53,7 +53,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(244, 236, 217, 0.78);
+  color: rgba(238, 231, 218, 0.78);
   transition: color 0.3s var(--ease);
 }
 
@@ -86,7 +86,7 @@
   padding: 0;
   border: 1px solid var(--line);
   border-radius: 2px;
-  background: rgba(7, 7, 7, 0.6);
+  background: rgba(18, 17, 16, 0.6);
   font-size: 22px;
   color: var(--gold);
   place-items: center;
@@ -101,15 +101,14 @@
   align-items: center;
   justify-content: center;
   gap: 22px;
-  background: rgba(7, 7, 7, 0.96);
+  background: rgba(18, 17, 16, 0.96);
   backdrop-filter: blur(10px);
 }
 
 .nav__sheet a:not(.btn) {
   font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 900;
-  text-transform: uppercase;
+  font-size: 54px;
+  font-weight: 400;
   text-decoration: none;
   color: var(--ink);
 }

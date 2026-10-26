@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { ACE_PATH, ACE_SIZE, H_PATH, LOGO_SIZE, Z_PATH } from '../components/brand'
 import { cardKey, isRedSuit, rankLabel, SUIT_SYMBOL, type CardData } from '../lib/poker'
 
 export const CARD_W = 0.56
@@ -10,8 +11,29 @@ const PX_H = 504
 const LOG_W = 288
 const LOG_H = 400
 
-const GOLD = '#e8b84b'
-const GOLD_DEEP = '#a8771f'
+const GOLD = '#c4a472'
+const GOLD_DEEP = '#8c7347'
+const BONE = '#eee7da'
+const NIGHT = '#121110'
+const FELT = '#1d3a2f'
+const HEARTS = '#c23b2e'
+
+const acePath = new Path2D(ACE_PATH)
+const hPath = new Path2D(H_PATH)
+const zPath = new Path2D(Z_PATH)
+
+/** draws the HAZ symbol centered at (cx, cy) with the given width */
+const drawAce = (ctx: CanvasRenderingContext2D, cx: number, cy: number, width: number, fill: string, flip = false) => {
+  const scale = width / ACE_SIZE.width
+  ctx.save()
+  ctx.translate(cx, cy)
+  if (flip) ctx.rotate(Math.PI)
+  ctx.scale(scale, scale)
+  ctx.translate(-ACE_SIZE.width / 2, -ACE_SIZE.height / 2)
+  ctx.fillStyle = fill
+  ctx.fill(acePath)
+  ctx.restore()
+}
 
 const makeCanvas = (width: number, height: number) => {
   const canvas = document.createElement('canvas')
@@ -56,46 +78,58 @@ export const getCardFaceTexture = (card: CardData) => {
 
   const { canvas, ctx } = makeCanvas(PX_W, PX_H)
   ctx.scale(PX_W / LOG_W, PX_H / LOG_H)
-  const color = isRedSuit(card.suit) ? '#b3202a' : '#15151a'
+  const color = isRedSuit(card.suit) ? HEARTS : NIGHT
   const rank = rankLabel(card.rank)
   const suit = SUIT_SYMBOL[card.suit]
+  const isAceOfSpades = card.rank === 14 && card.suit === 'S'
 
   roundRectPath(ctx, 2, 2, LOG_W - 4, LOG_H - 4, 26)
   const paper = ctx.createLinearGradient(0, 0, LOG_W, LOG_H)
-  paper.addColorStop(0, '#fbf6ea')
-  paper.addColorStop(1, '#ece3cd')
+  paper.addColorStop(0, '#f6f2e9')
+  paper.addColorStop(1, '#e9e3d4')
   ctx.fillStyle = paper
   ctx.fill()
   ctx.lineWidth = 3
-  ctx.strokeStyle = 'rgba(40,30,10,0.35)'
+  ctx.strokeStyle = 'rgba(40,30,10,0.3)'
   ctx.stroke()
 
-  ctx.fillStyle = color
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  const rankSize = rank.length > 1 ? 66 : 78
-  ctx.font = `700 ${rankSize}px Georgia, 'Times New Roman', serif`
-  ctx.fillText(rank, 46, 62)
-  ctx.font = '700 58px Georgia, serif'
-  ctx.fillText(suit, 46, 122)
+  const index = (flip: boolean) => {
+    ctx.save()
+    if (flip) {
+      ctx.translate(LOG_W, LOG_H)
+      ctx.rotate(Math.PI)
+    }
+    ctx.fillStyle = color
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.font = `${rank.length > 1 ? 70 : 82}px 'Instrument Serif', Georgia, serif`
+    ctx.fillText(rank, 46, 60)
+    if (isAceOfSpades) {
+      // the brand symbol is also the Ace's index
+      drawAce(ctx, 46, 124, 40, NIGHT)
+    } else {
+      ctx.font = '700 56px Georgia, serif'
+      ctx.fillText(suit, 46, 122)
+    }
+    ctx.restore()
+  }
+  index(false)
+  index(true)
 
-  ctx.save()
-  ctx.translate(LOG_W, LOG_H)
-  ctx.rotate(Math.PI)
-  ctx.font = `700 ${rankSize}px Georgia, 'Times New Roman', serif`
-  ctx.fillText(rank, 46, 62)
-  ctx.font = '700 58px Georgia, serif'
-  ctx.fillText(suit, 46, 122)
-  ctx.restore()
-
-  const isFace = card.rank >= 11 && card.rank <= 13
-  ctx.font = `${card.rank === 14 ? 190 : 150}px Georgia, serif`
-  ctx.fillText(suit, LOG_W / 2 + 6, LOG_H / 2 + 6)
-  if (isFace) {
-    ctx.strokeStyle = GOLD_DEEP
-    ctx.lineWidth = 3
-    roundRectPath(ctx, 70, 100, LOG_W - 140, LOG_H - 200, 10)
-    ctx.stroke()
+  if (isAceOfSpades) {
+    drawAce(ctx, LOG_W / 2, LOG_H / 2 + 4, 150, NIGHT)
+  } else {
+    ctx.fillStyle = color
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.font = `${card.rank === 14 ? 190 : 150}px Georgia, serif`
+    ctx.fillText(suit, LOG_W / 2 + 6, LOG_H / 2 + 6)
+    if (card.rank >= 11 && card.rank <= 13) {
+      ctx.strokeStyle = GOLD_DEEP
+      ctx.lineWidth = 3
+      roundRectPath(ctx, 70, 100, LOG_W - 140, LOG_H - 200, 10)
+      ctx.stroke()
+    }
   }
 
   const texture = toTexture(canvas)
@@ -110,49 +144,34 @@ export const getCardBackTexture = () => {
   const { canvas, ctx } = makeCanvas(PX_W, PX_H)
   ctx.scale(PX_W / LOG_W, PX_H / LOG_H)
 
+  // Feltro back with the "Padrão Ás": the symbol upright and inverted, like a real deck
   roundRectPath(ctx, 2, 2, LOG_W - 4, LOG_H - 4, 26)
-  ctx.fillStyle = '#0b0b0c'
+  ctx.fillStyle = FELT
   ctx.fill()
-  ctx.lineWidth = 3
-  ctx.strokeStyle = GOLD_DEEP
-  ctx.stroke()
-
   ctx.save()
-  roundRectPath(ctx, 18, 18, LOG_W - 36, LOG_H - 36, 16)
+  roundRectPath(ctx, 14, 14, LOG_W - 28, LOG_H - 28, 14)
   ctx.clip()
-  ctx.strokeStyle = 'rgba(232,184,75,0.28)'
-  ctx.lineWidth = 1.5
-  const step = 22
-  for (let i = -LOG_H; i < LOG_W + LOG_H; i += step) {
-    ctx.beginPath()
-    ctx.moveTo(i, 0)
-    ctx.lineTo(i + LOG_H, LOG_H)
-    ctx.moveTo(i, 0)
-    ctx.lineTo(i - LOG_H, LOG_H)
-    ctx.stroke()
+  const cell = 34
+  for (let row = -1; row * cell < LOG_H + cell; row++) {
+    for (let col = -1; col * cell < LOG_W + cell; col++) {
+      drawAce(ctx, col * cell + cell / 2 + 8, row * cell + cell / 2 + 6, 17, 'rgba(238,231,218,0.1)', (row + col) % 2 !== 0)
+    }
   }
   ctx.restore()
 
-  roundRectPath(ctx, 18, 18, LOG_W - 36, LOG_H - 36, 16)
+  roundRectPath(ctx, 14, 14, LOG_W - 28, LOG_H - 28, 14)
   ctx.strokeStyle = GOLD
-  ctx.lineWidth = 3
+  ctx.lineWidth = 2.5
   ctx.stroke()
 
-  ctx.fillStyle = '#0b0b0c'
+  ctx.fillStyle = FELT
   ctx.beginPath()
-  ctx.arc(LOG_W / 2, LOG_H / 2, 62, 0, Math.PI * 2)
+  ctx.arc(LOG_W / 2, LOG_H / 2, 54, 0, Math.PI * 2)
   ctx.fill()
   ctx.strokeStyle = GOLD
-  ctx.lineWidth = 3
+  ctx.lineWidth = 2.5
   ctx.stroke()
-
-  ctx.fillStyle = GOLD
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.font = '700 52px Georgia, serif'
-  ctx.fillText('HAZ', LOG_W / 2, LOG_H / 2 - 4)
-  ctx.font = '600 11px Arial, sans-serif'
-  ctx.fillText('POKER LOUNGE', LOG_W / 2, LOG_H / 2 + 30)
+  drawAce(ctx, LOG_W / 2, LOG_H / 2 + 2, 52, BONE)
 
   backTexture = toTexture(canvas)
   return backTexture
@@ -175,13 +194,13 @@ export const getBlobShadowTexture = () => {
 
 /* ---------------------------------- chips --------------------------------- */
 
-export type ChipColor = 'gold' | 'black' | 'red' | 'cream'
+export type ChipColor = 'black' | 'red' | 'green'
 
-const CHIP_PALETTE: Record<ChipColor, { base: string; accent: string; ink: string; label: string }> = {
-  gold: { base: '#c99a31', accent: '#f6e2a1', ink: '#1a1304', label: '500' },
-  black: { base: '#141414', accent: '#e8b84b', ink: '#e8b84b', label: '100' },
-  red: { base: '#8f1d22', accent: '#f1e6d0', ink: '#f1e6d0', label: '50' },
-  cream: { base: '#e9e0c9', accent: '#8f1d22', ink: '#1a1a1a', label: '25' },
+/** Fichas da casa: as três cores da marca, com o símbolo no centro */
+const CHIP_PALETTE: Record<ChipColor, { base: string; inner: string; accent: string; ink: string }> = {
+  black: { base: '#1a1917', inner: '#22201d', accent: GOLD, ink: GOLD },
+  red: { base: HEARTS, inner: '#a93126', accent: BONE, ink: BONE },
+  green: { base: FELT, inner: '#16302a', accent: BONE, ink: BONE },
 }
 
 /* ----------------------------------- felt --------------------------------- */
@@ -193,9 +212,9 @@ export const createFeltTexture = (widthUnits: number, depthUnits: number) => {
   const { canvas, ctx } = makeCanvas(width, height)
 
   const base = ctx.createRadialGradient(width / 2, height / 2, 40, width / 2, height / 2, width * 0.55)
-  base.addColorStop(0, '#12503f')
-  base.addColorStop(0.55, '#0b3a2d')
-  base.addColorStop(1, '#05211a')
+  base.addColorStop(0, '#2a5242')
+  base.addColorStop(0.55, '#1d3a2f')
+  base.addColorStop(1, '#0f2119')
   ctx.fillStyle = base
   ctx.fillRect(0, 0, width, height)
 
@@ -226,21 +245,29 @@ export const createFeltTexture = (widthUnits: number, depthUnits: number) => {
     ctx.stroke()
     ctx.restore()
   }
-  strokeStadium(26, 4, 'rgba(232,184,75,0.85)')
-  strokeStadium(40, 1.5, 'rgba(232,184,75,0.5)')
-  strokeStadium(height * 0.2, 2, 'rgba(232,184,75,0.28)', [14, 12])
+  strokeStadium(26, 4, 'rgba(196,164,114,0.85)')
+  strokeStadium(40, 1.5, 'rgba(196,164,114,0.5)')
+  strokeStadium(height * 0.2, 2, 'rgba(196,164,114,0.28)', [14, 12])
 
-  // faint brand mark at the center
+  // faint brand mark at the center: the real logo, in brass
   ctx.save()
   ctx.translate(width / 2, height / 2)
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillStyle = 'rgba(232,184,75,0.09)'
-  ctx.font = `700 ${height * 0.34}px Georgia, serif`
-  ctx.fillText('HAZ', 0, -height * 0.03)
-  ctx.font = `600 ${height * 0.05}px Arial, sans-serif`
-  ctx.letterSpacing = `${height * 0.02}px`
-  ctx.fillText('POKER LOUNGE', 0, height * 0.2)
+  const logoWidth = height * 0.62
+  const logoScale = logoWidth / LOGO_SIZE.width
+  ctx.scale(logoScale, logoScale)
+  ctx.translate(-LOGO_SIZE.width / 2, -LOGO_SIZE.height / 2 - 40)
+  ctx.fillStyle = 'rgba(196,164,114,0.13)'
+  ctx.fill(hPath)
+  ctx.save()
+  ctx.translate(297, 0)
+  ctx.fill(acePath)
+  ctx.restore()
+  ctx.fill(zPath)
+  ctx.font = '600 80px Inter, Arial, sans-serif'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'alphabetic'
+  ctx.letterSpacing = '56px'
+  ctx.fillText('POKER LOUNGE', 8, 507)
   ctx.restore()
 
   return toTexture(canvas)
@@ -248,7 +275,7 @@ export const createFeltTexture = (widthUnits: number, depthUnits: number) => {
 
 export const createDealerButtonTexture = () => {
   const { canvas, ctx } = makeCanvas(256, 256)
-  ctx.fillStyle = '#f3ead2'
+  ctx.fillStyle = BONE
   ctx.fillRect(0, 0, 256, 256)
   ctx.translate(128, 128)
   ctx.strokeStyle = GOLD_DEEP
@@ -256,10 +283,10 @@ export const createDealerButtonTexture = () => {
   ctx.beginPath()
   ctx.arc(0, 0, 108, 0, Math.PI * 2)
   ctx.stroke()
-  ctx.fillStyle = '#16120a'
+  ctx.fillStyle = NIGHT
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  ctx.font = '700 120px Georgia, serif'
+  ctx.font = "150px 'Instrument Serif', Georgia, serif"
   ctx.fillText('D', 0, 8)
   return toTexture(canvas)
 }
@@ -352,27 +379,28 @@ export const getChipFace = (color: ChipColor) => {
   const { canvas, ctx } = makeCanvas(512, 512)
   ctx.fillStyle = palette.base
   ctx.fillRect(0, 0, 512, 512)
+  ctx.save()
   ctx.translate(256, 256)
+  // edge spots
   ctx.strokeStyle = palette.accent
-  ctx.lineWidth = 40
+  ctx.lineWidth = 42
   for (let i = 0; i < EDGE_SEGMENTS; i++) {
     ctx.beginPath()
     ctx.arc(0, 0, 232, (i * Math.PI * 2) / EDGE_SEGMENTS + 0.13, ((i + 1) * Math.PI * 2) / EDGE_SEGMENTS - 0.13)
     ctx.stroke()
   }
-  ctx.lineWidth = 6
+  // darker inner disc with a dashed ring, as in the brand chips
+  ctx.fillStyle = palette.inner
   ctx.beginPath()
-  ctx.arc(0, 0, 178, 0, Math.PI * 2)
-  ctx.stroke()
-  ctx.lineWidth = 2
+  ctx.arc(0, 0, 186, 0, Math.PI * 2)
+  ctx.fill()
+  ctx.setLineDash([14, 10])
+  ctx.lineWidth = 4
   ctx.beginPath()
-  ctx.arc(0, 0, 150, 0, Math.PI * 2)
+  ctx.arc(0, 0, 160, 0, Math.PI * 2)
   ctx.stroke()
-  ctx.fillStyle = palette.ink
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.font = '700 96px Georgia, serif'
-  ctx.fillText(palette.label, 0, 6)
+  ctx.restore()
+  drawAce(ctx, 256, 262, 150, palette.ink)
   const texture = toTexture(canvas)
   chipFaceCache.set(color, texture)
   return texture
@@ -428,7 +456,7 @@ export const createFeltBump = (widthUnits: number, depthUnits: number) => {
 export const createPlainFelt = () => {
   const size = 1024
   const { canvas, ctx } = makeCanvas(size, size)
-  ctx.fillStyle = '#0c4234'
+  ctx.fillStyle = '#1b372c'
   ctx.fillRect(0, 0, size, size)
   for (let i = 0; i < 70; i++) {
     const x = Math.random() * size

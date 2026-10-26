@@ -1,4 +1,5 @@
 import { site } from '../data/site'
+import { AcePattern } from './AcePattern'
 import { InstagramIcon } from './Icons'
 import { Logo } from './Logo'
 import './Footer.css'
@@ -12,11 +13,12 @@ const links = [
 
 export const Footer = () => (
   <footer className="footer">
+    <AcePattern className="footer__pattern" />
     <hr className="divider" />
     <div className="footer__inner">
       <div className="footer__brand">
         <Logo className="footer__logo" />
-        <p>Home game. Poker. Texas Hold’em.</p>
+        <p className="footer__line">A casa dá as cartas.</p>
       </div>
 
       <nav aria-label="Rodapé" className="footer__nav">

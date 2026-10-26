@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
+import { AcePattern } from '../components/AcePattern'
 import { ArrowIcon, ClockIcon, eventIcons, perkIcons } from '../components/Icons'
 import { Tilt } from '../components/Tilt'
 import {
@@ -137,13 +138,14 @@ export const Events = () => {
 
   return (
     <section id="eventos" className="section section--felt events">
+      <AcePattern />
       <div className="section__inner">
         <header className="section-head section-head--center">
           <p className="eyebrow">Agenda</p>
           <h2 className="display">
             <span className="gold-text">Agenda</span> da semana
           </h2>
-          <p>Noites temáticas de poker, com comida boa e a mesa sempre cheia.</p>
+          <p>Fichas, cartas e boa companhia. Noites temáticas de poker, com comida boa e a mesa sempre cheia.</p>
         </header>
 
         <div className="tabs" role="tablist" aria-label="Período">

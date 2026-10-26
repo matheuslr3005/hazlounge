@@ -63,7 +63,7 @@ export const Hero = () => {
               Home game · Poker · Texas Hold’em
             </motion.p>
             <motion.h2 variants={item} className="display hero__title">
-              Sua mão <span className="gold-text">começa aqui.</span>
+              Sua mão<br /> <span className="gold-text">começa aqui.</span>
             </motion.h2>
             <motion.p variants={item} className="hero__lead">
               Noites temáticas de poker, com bebidas e narguilé liberados para os jogadores. Garanta sua cadeira ou reserve o

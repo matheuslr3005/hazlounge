@@ -154,10 +154,10 @@ const LooseCard = ({ x, z, yaw, face, layer = 0 }: { x: number; z: number; yaw: 
 type DropChip = { colors: Parameters<typeof ChipStack>[0]['colors']; x: number; z: number; delay: number; seed: number }
 
 const CHIP_STACKS: DropChip[] = [
-  { colors: ['gold', 'black', 'black', 'gold', 'black', 'red', 'red', 'black', 'gold', 'black'], x: 2.15, z: 1.05, delay: 0.5, seed: 4 },
-  { colors: ['red', 'cream', 'red', 'cream', 'red', 'black', 'gold'], x: 2.6, z: 0.62, delay: 0.75, seed: 8 },
-  { colors: ['black', 'black', 'gold', 'black', 'black', 'gold'], x: 1.9, z: 0.55, delay: 1.0, seed: 12 },
-  { colors: ['cream', 'cream', 'red', 'red'], x: -2.4, z: 1.25, delay: 1.2, seed: 16 },
+  { colors: ['green', 'black', 'black', 'green', 'black', 'red', 'red', 'black', 'green', 'black'], x: 2.15, z: 1.05, delay: 0.5, seed: 4 },
+  { colors: ['red', 'black', 'red', 'black', 'red', 'black', 'green'], x: 2.6, z: 0.62, delay: 0.75, seed: 8 },
+  { colors: ['black', 'black', 'green', 'black', 'black', 'green'], x: 1.9, z: 0.55, delay: 1.0, seed: 12 },
+  { colors: ['black', 'black', 'red', 'red'], x: -2.4, z: 1.25, delay: 1.2, seed: 16 },
 ]
 
 /**
@@ -312,8 +312,8 @@ const Contents = ({ low }: { low: boolean }) => {
 
   return (
     <>
-      <color attach="background" args={['#040302']} />
-      <fog attach="fog" args={['#050403', 11, 26]} />
+      <color attach="background" args={['#0e0d0c']} />
+      <fog attach="fog" args={['#0e0d0c', 11, 26]} />
       <CameraControl />
 
       <ambientLight intensity={0.28} color="#ffe6c4" />
@@ -333,11 +333,11 @@ const Contents = ({ low }: { low: boolean }) => {
         shadow-radius={7}
         shadow-blurSamples={18}
       />
-      <pointLight position={[4.5, 2.2, -2]} color="#e8b84b" intensity={34} distance={16} decay={1.6} />
+      <pointLight position={[4.5, 2.2, -2]} color="#c4a472" intensity={34} distance={16} decay={1.6} />
       <pointLight position={[-5, 2, -3]} color="#ffb15c" intensity={22} distance={16} decay={1.6} />
       <Environment resolution={256} frames={1}>
         <Lightformer form="rect" intensity={2.2} color="#ffd9a0" position={[-2, 6, 3]} rotation-x={Math.PI / 2} scale={[8, 5, 1]} />
-        <Lightformer form="rect" intensity={1.3} color="#e8b84b" position={[6, 2, -2]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
+        <Lightformer form="rect" intensity={1.3} color="#c4a472" position={[6, 2, -2]} rotation-y={-Math.PI / 2} scale={[6, 3, 1]} />
       </Environment>
 
       <Rig>

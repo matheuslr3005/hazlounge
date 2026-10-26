@@ -84,7 +84,7 @@ export const Table = ({ withBase = true }: { withBase?: boolean }) => {
             <meshStandardMaterial map={parts.wood} color="#c9a07a" roughness={0.5} metalness={0.1} />
           </mesh>
           <mesh geometry={parts.goldBand} position-y={-0.2}>
-            <meshStandardMaterial color="#e0ad3f" metalness={1} roughness={0.3} />
+            <meshStandardMaterial color="#c4a472" metalness={1} roughness={0.3} />
           </mesh>
           <mesh geometry={parts.pedestal} position-y={FLOOR_Y + 0.04}>
             <meshStandardMaterial color="#0e0a07" roughness={0.45} metalness={0.4} />
@@ -111,10 +111,10 @@ export const Table = ({ withBase = true }: { withBase?: boolean }) => {
       </mesh>
 
       <mesh geometry={parts.goldInner}>
-        <meshStandardMaterial color="#e0ad3f" metalness={1} roughness={0.22} />
+        <meshStandardMaterial color="#c4a472" metalness={1} roughness={0.22} />
       </mesh>
       <mesh geometry={parts.goldOuter} position-y={RAIL_TOP - 0.005}>
-        <meshStandardMaterial color="#e0ad3f" metalness={1} roughness={0.28} />
+        <meshStandardMaterial color="#c4a472" metalness={1} roughness={0.28} />
       </mesh>
     </group>
   )

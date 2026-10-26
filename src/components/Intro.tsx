@@ -11,7 +11,7 @@ const STATUS = [
   { until: 0.5, text: 'Embaralhando' },
   { until: 2.5, text: 'Distribuindo as cartas' },
   { until: 3.8, text: 'Abrindo o flop' },
-  { until: 99, text: 'Boa sorte' },
+  { until: 99, text: 'Bora pra mesa' },
 ]
 
 class SceneBoundary extends Component<{ children: ReactNode; onError: () => void }, { failed: boolean }> {

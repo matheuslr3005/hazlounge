@@ -1,5 +1,5 @@
 .ranking {
-  background: radial-gradient(60% 40% at 90% 10%, rgba(232, 184, 75, 0.07), transparent 70%), var(--bg);
+  background: radial-gradient(60% 40% at 90% 10%, rgba(196, 164, 114, 0.07), transparent 70%), var(--bg);
 }
 
 .ranking__layout {
@@ -45,10 +45,9 @@
 
 .tier-card strong {
   font-family: var(--font-cond);
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 400;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--tier, var(--gold));
 }
 
@@ -59,22 +58,22 @@
 
 .tier-card--monster,
 .tier--monster {
-  --tier: #f1c24f;
+  --tier: #c4a472;
 }
 
 .tier-card--strong,
 .tier--strong {
-  --tier: #6fd08c;
+  --tier: #7da58f;
 }
 
 .tier-card--medium,
 .tier--medium {
-  --tier: #e8a246;
+  --tier: #d9d0bd;
 }
 
 .tier-card--weak,
 .tier--weak {
-  --tier: #c8656b;
+  --tier: #d4645a;
 }
 
 .ranking__note {
@@ -120,19 +119,19 @@
 }
 
 .rank-row--monster {
-  --tier: #f1c24f;
+  --tier: #c4a472;
 }
 
 .rank-row--strong {
-  --tier: #6fd08c;
+  --tier: #7da58f;
 }
 
 .rank-row--medium {
-  --tier: #e8a246;
+  --tier: #d9d0bd;
 }
 
 .rank-row--weak {
-  --tier: #c8656b;
+  --tier: #d4645a;
 }
 
 .rank-row:hover,
@@ -142,7 +141,7 @@
 }
 
 .rank-row.is-open {
-  background: linear-gradient(90deg, rgba(34, 28, 14, 0.9), rgba(12, 11, 9, 0.95));
+  background: linear-gradient(90deg, rgba(40, 34, 22, 0.9), rgba(12, 11, 9, 0.95));
 }
 
 .rank-row__head {
@@ -159,9 +158,9 @@
 
 .rank-row__pos {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 900;
-  color: rgba(232, 184, 75, 0.5);
+  font-size: 24px;
+  font-weight: 400;
+  color: rgba(196, 164, 114, 0.5);
 }
 
 .rank-row.is-open .rank-row__pos {
@@ -181,7 +180,7 @@
 }
 
 .rank-row__title strong {
-  font-size: clamp(24px, 2.4vw, 32px);
+  font-size: clamp(30px, 3vw, 40px);
   line-height: 1;
   font-weight: 400;
 }
@@ -201,7 +200,7 @@
 .rank-row__meter {
   display: block;
   height: 3px;
-  background: rgba(244, 236, 217, 0.08);
+  background: rgba(238, 231, 218, 0.08);
 }
 
 .rank-row__meter i {
@@ -276,7 +275,7 @@
 .rank-row__body-inner p {
   max-width: 54ch;
   font-size: 14.5px;
-  color: rgba(244, 236, 217, 0.82);
+  color: rgba(238, 231, 218, 0.82);
 }
 
 .rank-row__body-inner .rank-row__tip {
@@ -302,8 +301,8 @@
 .rank-row__body-inner dd {
   margin: 2px 0 0;
   font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 400;
   color: var(--gold-hi);
 }
 

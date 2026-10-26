@@ -10,6 +10,10 @@ npm run dev      # http://localhost:5173
 npm run build    # saída em dist/
 ```
 
+## Identidade visual
+
+Segue o PDF "HAZ Poker Lounge · Identidade visual" (LAX, out/2026): cores Noite `#121110`, Osso `#EEE7DA`, Feltro `#1D3A2F`, Latão `#C4A472` e Copas `#C23B2E`; fontes Instrument Serif (títulos) e Inter (textos). O logo e o símbolo (o Ás) são desenhados em código em `src/components/brand.ts` e `src/components/Logo.tsx`; o padrão do Ás está em `src/components/AcePattern.tsx`. As cores ficam como variáveis no topo de `src/styles/global.css`.
+
 ## Onde editar o conteúdo
 
 | O quê | Arquivo |
