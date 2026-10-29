@@ -4,7 +4,6 @@ import { AcePattern } from '../components/AcePattern'
 import { ArrowIcon, ClockIcon, eventIcons, perkIcons } from '../components/Icons'
 import { Tilt } from '../components/Tilt'
 import {
-  eventImage,
   events,
   formatEventDate,
   isEventPast,
@@ -12,6 +11,7 @@ import {
   parseEventDate,
   type LoungeEvent,
 } from '../data/events'
+import { eventImage } from '../data/eventImages'
 import { site } from '../data/site'
 import { useApp } from '../store'
 import './Events.css'

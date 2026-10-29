@@ -51,12 +51,6 @@ export const events: LoungeEvent[] = [
   buildEvent('2026-11-05', 'burger', 'Burger Night', false),
 ]
 
-export const eventImage: Record<EventKind, string> = {
-  pizza: `${import.meta.env.BASE_URL}images/pizza-night.png`,
-  sushi: `${import.meta.env.BASE_URL}images/sushi-night.png`,
-  burger: `${import.meta.env.BASE_URL}images/burger-night.png`,
-}
-
 const WEEKDAYS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
 const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez']
 
@@ -85,17 +79,9 @@ export const isEventPast = (event: LoungeEvent, now = new Date()) =>
 export const isEventToday = (event: LoungeEvent, now = new Date()) =>
   parseEventDate(event.date).getTime() === startOfDay(now).getTime()
 
-/** Deterministic "taken seats" so the demo is stable per event until there is a real backend. */
-export const takenSeatsFor = (eventId: string, seatCount: number): number[] => {
-  let seed = 0
-  for (const char of eventId) seed = (seed * 31 + char.charCodeAt(0)) >>> 0
-  const taken: number[] = []
-  const target = 3 + (seed % 3)
-  let cursor = seed
-  while (taken.length < target) {
-    cursor = (cursor * 1664525 + 1013904223) >>> 0
-    const seat = cursor % seatCount
-    if (!taken.includes(seat)) taken.push(seat)
-  }
-  return taken
+/** Cadeiras já confirmadas pela equipe (1 a 9), por noite. Edite aqui quando fechar uma reserva pelo WhatsApp. */
+const TAKEN_SEATS: Record<string, number[]> = {
+  // 'pizza-night-2026-10-27': [2, 5],
 }
+
+export const takenSeatsOf = (event: Pick<LoungeEvent, 'id'>): number[] => TAKEN_SEATS[event.id] ?? []

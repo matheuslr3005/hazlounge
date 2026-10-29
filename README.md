@@ -32,6 +32,12 @@ Segue o PDF "HAZ Poker Lounge · Identidade visual" (LAX, out/2026): cores Noite
 - Em telas pequenas ou com poucos núcleos a qualidade cai (sem desfoque nem MSAA). Sem WebGL, ou com "reduzir movimento" ligado, o site abre direto.
 - Em desenvolvimento, `?introAt=4.4&introFreeze=1` congela a abertura num instante para inspecionar um quadro.
 
-## Reservas e pagamento (demonstração)
+## Reservas e pagamento (pelo WhatsApp)
 
-`src/lib/booking.ts` guarda reservas só no `localStorage` e simula o pagamento. Nada sai do navegador e nenhum dado de cartão é coletado. Antes de publicar, troque `submitSeatReservation` e `submitRentalRequest` por chamadas a uma API real e conecte um provedor de pagamento (Mercado Pago, Pagar.me, Stripe etc.). A disponibilidade de cadeiras (`takenSeatsFor` em `events.ts`) também é simulada.
+Não há cobrança nem banco de dados no site. A pessoa escolhe a noite e as cadeiras, informa nome e WhatsApp, e o site abre a conversa com o HAZ já com o pedido escrito (`src/lib/booking.ts`). A equipe confirma a cadeira e combina o pagamento direto com ela, pelo WhatsApp. O formulário de aluguel do lounge segue o mesmo caminho.
+
+Para funcionar, preencha o número do HAZ em `src/data/site.ts` (`whatsapp`, só dígitos com 55 e DDD, ex.: `5511999999999`). Enquanto estiver vazio, o botão vira "Copiar pedido de reserva".
+
+**Cadeiras ocupadas:** quando a equipe fechar uma reserva, marque as cadeiras em `TAKEN_SEATS` no fim de `src/data/events.ts` (ex.: `'pizza-night-2026-10-27': [2, 5]`) e publique de novo. Cadeiras de 1 a 9.
+
+> O sistema de pagamento online (Mercado Pago, banco D1, aviso automático no WhatsApp) foi construído e depois retirado. Está no histórico do git, no commit `ce881e5`, caso volte a ser útil.

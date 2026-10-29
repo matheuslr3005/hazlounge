@@ -2,31 +2,22 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { AcePattern } from '../components/AcePattern'
 import { ArrowIcon, CheckIcon } from '../components/Icons'
-import { SEAT_TOTAL, SeatMap } from '../components/SeatMap'
+import { SeatMap } from '../components/SeatMap'
+import { events, formatEventDate, isEventPast, takenSeatsOf } from '../data/events'
+import { MAX_SEATS_PER_BOOKING as MAX_SEATS, SEAT_TOTAL } from '../data/tables'
 import {
-  events,
-  formatEventDate,
-  isEventPast,
-  takenSeatsFor,
-  type LoungeEvent,
-} from '../data/events'
-import { site } from '../data/site'
-import {
-  buildCalendarFile,
+  buildRentalMessage,
+  buildSeatMessage,
   formatMoney,
   formatPhone,
-  submitRentalRequest,
-  submitSeatReservation,
-  type PaymentMethod,
-  type RentalRequest,
-  type SeatReservation,
+  joinSeats,
+  whatsappUrl,
+  type RentalInput,
 } from '../lib/booking'
 import { useApp } from '../store'
 import './Reserve.css'
 
 const ChipViewer = lazy(() => import('../components/ChipViewer'))
-
-const MAX_SEATS = 3
 
 const fade = {
   initial: { opacity: 0, y: 18 },
@@ -52,45 +43,6 @@ const useInView = <T extends Element>() => {
   return [ref, seen] as const
 }
 
-/** Decorative QR-like pattern seeded by a string. Not scannable: demo only. */
-const PseudoQr = ({ seed, size = 132 }: { seed: string; size?: number }) => {
-  const cells = useMemo(() => {
-    let state = 0
-    for (const char of seed) state = (state * 33 + char.charCodeAt(0)) >>> 0
-    const next = () => {
-      state = (state * 1664525 + 1013904223) >>> 0
-      return state / 0xffffffff
-    }
-    const n = 25
-    const finder = (x: number, y: number) =>
-      (x < 7 && y < 7) || (x > n - 8 && y < 7) || (x < 7 && y > n - 8)
-    return Array.from({ length: n * n }, (_, i) => {
-      const x = i % n
-      const y = Math.floor(i / n)
-      return finder(x, y) ? false : next() > 0.52
-    }).map((on, i) => ({ on, x: i % n, y: Math.floor(i / n) }))
-  }, [seed])
-
-  const Finder = ({ x, y }: { x: number; y: number }) => (
-    <g transform={`translate(${x} ${y})`}>
-      <rect width="7" height="7" fill="#121110" />
-      <rect x="1" y="1" width="5" height="5" fill="#eee7da" />
-      <rect x="2" y="2" width="3" height="3" fill="#121110" />
-    </g>
-  )
-
-  return (
-    <svg viewBox="0 0 25 25" width={size} height={size} role="img" aria-label="QR de demonstração" shapeRendering="crispEdges">
-      <rect width="25" height="25" fill="#eee7da" />
-      {cells.filter((cell) => cell.on).map((cell) => (
-        <rect key={`${cell.x}-${cell.y}`} x={cell.x} y={cell.y} width="1" height="1" fill="#121110" />
-      ))}
-      <Finder x={0} y={0} />
-      <Finder x={18} y={0} />
-      <Finder x={0} y={18} />
-    </svg>
-  )
-}
 
 const Field = ({
   label,
@@ -110,15 +62,6 @@ const Field = ({
   </label>
 )
 
-const downloadCalendar = (event: Pick<LoungeEvent, 'title' | 'date' | 'startTime'>, code: string) => {
-  const url = URL.createObjectURL(buildCalendarFile(event, code))
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `${code}.ics`
-  link.click()
-  URL.revokeObjectURL(url)
-}
-
 const FloatingChip = () => {
   const [ref, seen] = useInView<HTMLDivElement>()
   return (
@@ -133,23 +76,42 @@ const FloatingChip = () => {
   )
 }
 
+
+/** Abre o WhatsApp do HAZ com a mensagem pronta; sem número configurado, cai no botão de copiar. */
+const SendButtons = ({ message, onSent }: { message: string; onSent?: () => void }) => {
+  const link = whatsappUrl(message)
+  const [copied, setCopied] = useState(false)
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(message)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2500)
+    } catch {
+      // sem permissão da área de transferência: o texto continua visível na tela
+    }
+  }
+  return link ? (
+    <a className="btn" href={link} target="_blank" rel="noreferrer" onClick={onSent}>
+      Reservar pelo WhatsApp <ArrowIcon />
+    </a>
+  ) : (
+    <button type="button" className="btn" onClick={copy}>
+      {copied ? 'Pedido copiado' : 'Copiar pedido de reserva'}
+    </button>
+  )
+}
+
 /* ---------------------------- seat reservation ---------------------------- */
 
-type Step = 'seat' | 'details' | 'payment' | 'pix' | 'done'
+type Step = 'seat' | 'details' | 'send' | 'sent'
 
 const STEP_LABELS = [
   { id: 'seat', label: 'Cadeira' },
   { id: 'details', label: 'Seus dados' },
-  { id: 'payment', label: 'Pagamento' },
+  { id: 'send', label: 'WhatsApp' },
 ] as const
 
-const stepIndex = (step: Step) => (step === 'pix' ? 2 : step === 'done' ? 3 : STEP_LABELS.findIndex((item) => item.id === step))
-
-const PAYMENT_OPTIONS: { id: PaymentMethod; title: string; text: string }[] = [
-  { id: 'pix', title: 'PIX', text: 'Pague na hora e a vaga fica garantida.' },
-  { id: 'card', title: 'Cartão de crédito', text: 'Pagamento em ambiente seguro do provedor.' },
-  { id: 'onsite', title: 'Pagar na chegada', text: 'A equipe confirma sua pré-reserva pelo WhatsApp.' },
-]
+const stepIndex = (step: Step) => (step === 'sent' ? 3 : STEP_LABELS.findIndex((item) => item.id === step))
 
 const bookableEvents = events.filter((event) => !isEventPast(event))
 
@@ -159,14 +121,11 @@ const SeatBooking = () => {
   const [eventId, setEventId] = useState(() => reserveEventId ?? bookableEvents[0]?.id ?? '')
   const [seats, setSeats] = useState<number[]>([])
   const [step, setStep] = useState<Step>('seat')
-  const [form, setForm] = useState({ name: '', whatsapp: '', email: '' })
+  const [form, setForm] = useState({ name: '', whatsapp: '' })
   const [touched, setTouched] = useState(false)
-  const [method, setMethod] = useState<PaymentMethod>('pix')
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<SeatReservation | null>(null)
 
   const event = events.find((item) => item.id === eventId) ?? bookableEvents[0]
-  const taken = useMemo(() => (event ? takenSeatsFor(event.id, SEAT_TOTAL).map((seat) => seat + 1) : []), [event])
+  const taken = useMemo(() => (event ? takenSeatsOf(event) : []), [event])
   const total = event ? seats.length * event.buyIn : 0
 
   useEffect(() => {
@@ -174,16 +133,14 @@ const SeatBooking = () => {
       setEventId(reserveEventId)
       setSeats([])
       setStep('seat')
-      setResult(null)
     }
   }, [reserveEventId])
 
   const errors = {
     name: form.name.trim().length < 3 ? 'Informe seu nome completo.' : undefined,
     whatsapp: form.whatsapp.replace(/\D/g, '').length < 10 ? 'Informe um WhatsApp com DDD.' : undefined,
-    email: form.email && !/^\S+@\S+\.\S+$/.test(form.email) ? 'E-mail inválido.' : undefined,
   }
-  const hasErrors = Boolean(errors.name || errors.whatsapp || errors.email)
+  const hasErrors = Boolean(errors.name || errors.whatsapp)
 
   if (!event) {
     return <p className="panel__empty">Nenhum evento aberto para reserva no momento.</p>
@@ -199,48 +156,26 @@ const SeatBooking = () => {
 
   const goDetails = () => seats.length > 0 && setStep('details')
 
-  const goPayment = (submitEvent: FormEvent) => {
+  const goSend = (submitEvent: FormEvent) => {
     submitEvent.preventDefault()
     setTouched(true)
-    if (!hasErrors) setStep('payment')
+    if (!hasErrors) setStep('send')
   }
-
-  const finish = async (paid: boolean) => {
-    setSubmitting(true)
-    const reservation = await submitSeatReservation({
-      eventId: event.id,
-      eventTitle: event.title,
-      eventDate: event.date,
-      startTime: event.startTime,
-      seats,
-      total,
-      method,
-      paid,
-      name: form.name.trim(),
-      whatsapp: form.whatsapp,
-      email: form.email.trim(),
-    })
-    setSubmitting(false)
-    setResult(reservation)
-    setStep('done')
-  }
-
-  const confirm = () => (method === 'pix' ? setStep('pix') : finish(method === 'card'))
 
   const reset = () => {
     setSeats([])
     setStep('seat')
-    setResult(null)
     setTouched(false)
   }
 
+  const message = buildSeatMessage({ event, seats, name: form.name.trim(), whatsapp: form.whatsapp })
   const date = formatEventDate(event.date)
   const current = stepIndex(step)
 
   return (
     <div className="booking">
       <div className="booking__main">
-        {step !== 'done' && (
+        {step !== 'sent' && (
           <ol className="steps" aria-label="Etapas da reserva">
             {STEP_LABELS.map((item, index) => (
               <li key={item.id} className={index === current ? 'is-active' : index < current ? 'is-done' : ''}>
@@ -295,8 +230,7 @@ const SeatBooking = () => {
                 </li>
               </ul>
               <p className="panel__note">
-                Disponibilidade de demonstração. Ela passa a refletir o salão de verdade quando o sistema de reservas for
-                conectado.
+                Cadeiras ocupadas já foram confirmadas pela equipe. A sua só fica garantida depois da confirmação pelo WhatsApp.
               </p>
 
               <div className="panel__actions">
@@ -308,7 +242,7 @@ const SeatBooking = () => {
           )}
 
           {step === 'details' && (
-            <motion.form key="details" {...fade} className="panel" onSubmit={goPayment} noValidate>
+            <motion.form key="details" {...fade} className="panel" onSubmit={goSend} noValidate>
               <h3 className="panel__title">Quem vai sentar à mesa?</h3>
               <div className="fields">
                 <Field label="Nome completo" error={touched ? errors.name : undefined}>
@@ -320,7 +254,7 @@ const SeatBooking = () => {
                     placeholder="Como está no seu documento"
                   />
                 </Field>
-                <Field label="WhatsApp" error={touched ? errors.whatsapp : undefined} hint="Enviamos a confirmação por aqui.">
+                <Field label="Seu WhatsApp" error={touched ? errors.whatsapp : undefined} hint="A equipe responde por este número.">
                   <input
                     type="tel"
                     inputMode="tel"
@@ -330,132 +264,48 @@ const SeatBooking = () => {
                     placeholder="(11) 90000-0000"
                   />
                 </Field>
-                <Field label="E-mail (opcional)" error={touched ? errors.email : undefined}>
-                  <input
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    placeholder="voce@email.com"
-                  />
-                </Field>
               </div>
               <div className="panel__actions">
                 <button type="button" className="btn btn--ghost" onClick={() => setStep('seat')}>
                   Voltar
                 </button>
                 <button type="submit" className="btn">
-                  Ir para pagamento <ArrowIcon />
+                  Revisar pedido <ArrowIcon />
                 </button>
               </div>
             </motion.form>
           )}
 
-          {step === 'payment' && (
-            <motion.div key="payment" {...fade} className="panel">
-              <h3 className="panel__title">Como você prefere pagar?</h3>
-              <div className="pay" role="radiogroup" aria-label="Forma de pagamento">
-                {PAYMENT_OPTIONS.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={method === option.id}
-                    className={method === option.id ? 'is-active' : ''}
-                    onClick={() => setMethod(option.id)}
-                  >
-                    <span className="pay__dot" />
-                    <span>
-                      <strong>{option.title}</strong>
-                      <small>{option.text}</small>
-                    </span>
-                  </button>
-                ))}
-              </div>
+          {step === 'send' && (
+            <motion.div key="send" {...fade} className="panel">
+              <h3 className="panel__title">Confira e envie pelo WhatsApp</h3>
+              <pre className="message">{message}</pre>
               <p className="panel__note">
-                Ambiente de demonstração: nenhum pagamento real é processado e nenhum dado de cartão é coletado aqui.
+                Ao tocar no botão, abrimos a conversa com o HAZ com este pedido já escrito. A equipe confirma sua cadeira e
+                combina o pagamento com você por lá. Não cobramos nada neste site.
               </p>
               <div className="panel__actions">
                 <button type="button" className="btn btn--ghost" onClick={() => setStep('details')}>
                   Voltar
                 </button>
-                <button type="button" className="btn" disabled={submitting} onClick={confirm}>
-                  {submitting ? 'Confirmando…' : method === 'onsite' ? 'Pré-reservar vaga' : `Pagar ${formatMoney(total)}`}
-                  {!submitting && <ArrowIcon />}
-                </button>
+                <SendButtons message={message} onSent={() => setStep('sent')} />
               </div>
             </motion.div>
           )}
 
-          {step === 'pix' && (
-            <motion.div key="pix" {...fade} className="panel panel--pix">
-              <h3 className="panel__title">Pague com PIX</h3>
-              <div className="pix">
-                <PseudoQr seed={`${event.id}-${seats.join('')}-${form.name}`} size={168} />
-                <div>
-                  <p className="pix__amount">{formatMoney(total)}</p>
-                  <p className="panel__note">
-                    QR e código de demonstração. Com o provedor de pagamento conectado, o PIX real aparece aqui e a
-                    confirmação é automática.
-                  </p>
-                  <code className="pix__code">HAZ-DEMO-PIX-{seats.join('')}</code>
-                </div>
-              </div>
-              <div className="panel__actions">
-                <button type="button" className="btn btn--ghost" onClick={() => setStep('payment')}>
-                  Voltar
-                </button>
-                <button type="button" className="btn" disabled={submitting} onClick={() => finish(true)}>
-                  {submitting ? 'Confirmando…' : 'Simular pagamento aprovado'}
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 'done' && result && (
-            <motion.div key="done" {...fade} className="panel panel--done">
+          {step === 'sent' && (
+            <motion.div key="sent" {...fade} className="panel panel--done">
               <div className="done__badge">
                 <CheckIcon />
               </div>
-              <h3 className="display">Vaga {result.paid ? 'garantida' : 'pré-reservada'}</h3>
+              <h3 className="display">Pedido pronto</h3>
               <p className="panel__note">
-                {result.paid
-                  ? 'Seu pagamento foi confirmado. Apresente o código na entrada.'
-                  : 'Sua pré-reserva foi registrada. A equipe confirma com você pelo WhatsApp.'}
+                Falta só enviar a mensagem no WhatsApp, se ela ainda não saiu. Sua cadeira fica garantida quando a equipe
+                confirmar e combinar o pagamento com você.
               </p>
-
-              <div className="ticket frame">
-                <span className="corner-bl" />
-                <span className="corner-br" />
-                <div className="ticket__main">
-                  <p className="ticket__label">{date.weekday} · {date.short} · {event.startTime}</p>
-                  <h4 className="cond">{event.title}</h4>
-                  <dl>
-                    <div>
-                      <dt>Jogador</dt>
-                      <dd>{result.name}</dd>
-                    </div>
-                    <div>
-                      <dt>{result.seats.length > 1 ? 'Cadeiras' : 'Cadeira'}</dt>
-                      <dd>{result.seats.join(' · ')}</dd>
-                    </div>
-                    <div>
-                      <dt>{result.paid ? 'Pago' : 'A pagar'}</dt>
-                      <dd>{formatMoney(result.total)}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="ticket__stub">
-                  <PseudoQr seed={result.code} size={96} />
-                  <strong>{result.code}</strong>
-                </div>
-              </div>
-
               <div className="panel__actions">
-                <button type="button" className="btn btn--ghost" onClick={() => downloadCalendar(event, result.code)}>
-                  Salvar no calendário
-                </button>
-                <button type="button" className="btn" onClick={reset}>
+                <SendButtons message={message} />
+                <button type="button" className="btn btn--ghost" onClick={reset}>
                   Nova reserva
                 </button>
               </div>
@@ -481,7 +331,7 @@ const SeatBooking = () => {
             </div>
             <div>
               <dt>Cadeiras</dt>
-              <dd>{seats.length ? seats.join(', ') : '—'}</dd>
+              <dd>{seats.length ? joinSeats(seats) : '—'}</dd>
             </div>
             <div className="summary__total">
               <dt>Total</dt>
@@ -518,8 +368,7 @@ const RentalForm = () => {
     message: '',
   })
   const [touched, setTouched] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [result, setResult] = useState<RentalRequest | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
   const errors = {
     name: form.name.trim().length < 3 ? 'Informe seu nome.' : undefined,
@@ -536,43 +385,32 @@ const RentalForm = () => {
         : [...current.interests, value],
     }))
 
-  const submit = async (submitEvent: FormEvent) => {
+  const submit = (submitEvent: FormEvent) => {
     submitEvent.preventDefault()
     setTouched(true)
     if (invalid) return
-    setSubmitting(true)
-    setResult(await submitRentalRequest({ ...form, name: form.name.trim(), message: form.message.trim() }))
-    setSubmitting(false)
+    const input: RentalInput = { ...form, name: form.name.trim(), email: form.email.trim(), message: form.message.trim() }
+    setMessage(buildRentalMessage(input))
   }
-
-  const whatsappLink = result && site.whatsapp
-    ? `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
-        `Olá! Fiz um pedido de aluguel do HAZ (${result.code}) para ${result.date}, ${result.guests} pessoas.`,
-      )}`
-    : null
 
   return (
     <div className="booking">
       <div className="booking__main">
         <AnimatePresence mode="wait">
-          {result ? (
+          {message ? (
             <motion.div key="sent" {...fade} className="panel panel--done">
               <div className="done__badge">
                 <CheckIcon />
               </div>
-              <h3 className="display">Pedido enviado</h3>
+              <h3 className="display">Pedido pronto</h3>
+              <pre className="message">{message}</pre>
               <p className="panel__note">
-                Recebemos sua solicitação <strong>{result.code}</strong>. A equipe do HAZ retorna com disponibilidade e
-                valores pelo WhatsApp informado.
+                Envie pelo WhatsApp. A equipe do HAZ confere a agenda e responde com disponibilidade e valores.
               </p>
               <div className="panel__actions">
-                {whatsappLink && (
-                  <a className="btn" href={whatsappLink} target="_blank" rel="noreferrer">
-                    Falar no WhatsApp
-                  </a>
-                )}
-                <button type="button" className="btn btn--ghost" onClick={() => setResult(null)}>
-                  Novo pedido
+                <SendButtons message={message} />
+                <button type="button" className="btn btn--ghost" onClick={() => setMessage(null)}>
+                  Editar pedido
                 </button>
               </div>
             </motion.div>
@@ -657,8 +495,8 @@ const RentalForm = () => {
               </Field>
 
               <div className="panel__actions">
-                <button type="submit" className="btn" disabled={submitting}>
-                  {submitting ? 'Enviando…' : 'Solicitar orçamento'} {!submitting && <ArrowIcon />}
+                <button type="submit" className="btn">
+                  Revisar pedido <ArrowIcon />
                 </button>
               </div>
             </motion.form>
@@ -673,9 +511,9 @@ const RentalForm = () => {
           <span className="corner-br" />
           <p className="eyebrow eyebrow--left">Como funciona</p>
           <ol className="summary__steps">
-            <li>Você envia data, horário e número de convidados.</li>
-            <li>A equipe confere a agenda e responde com valores.</li>
-            <li>Combinado, o lounge fica reservado para o seu jogo.</li>
+            <li>Você escolhe data, horário e número de convidados.</li>
+            <li>Enviamos o pedido pronto para o WhatsApp do HAZ.</li>
+            <li>A equipe confere a agenda, passa os valores e combina o pagamento por lá.</li>
           </ol>
         </div>
       </aside>
@@ -695,7 +533,7 @@ export const Reserve = () => {
       <div className="section__inner">
         <header className="section-head section-head--center">
           <p className="eyebrow">Reservas</p>
-          <h2 className="display">
+          <h2 className="display reserve__title">
             Sente-se. <span className="gold-text">A mesa é sua.</span>
           </h2>
           <p>Garanta uma vaga em um dos eventos ou reserve o lounge inteiro para o seu próprio home game.</p>

@@ -6,7 +6,7 @@ export const site = {
    * Número do WhatsApp do lounge no formato internacional, só dígitos (ex.: "5511999999999").
    * Enquanto estiver vazio, os botões de WhatsApp ficam ocultos.
    */
-  whatsapp: '',
+  whatsapp: '5551982258976',
   currency: 'R$',
   defaultBuyIn: 500,
   startTime: '19h',

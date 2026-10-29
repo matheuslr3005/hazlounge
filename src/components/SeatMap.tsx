@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
+import { SEAT_TOTAL } from '../data/tables'
 import './SeatMap.css'
 
-export const SEAT_TOTAL = 9
+export { SEAT_TOTAL }
 const VIEW_W = 640
 const VIEW_H = 340
 

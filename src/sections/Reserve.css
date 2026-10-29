@@ -344,94 +344,7 @@
   font-weight: 400;
 }
 
-/* ------------------------------- payments -------------------------------- */
-
-.pay {
-  display: grid;
-  gap: 8px;
-}
-
-.pay button {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 18px;
-  border: 1px solid var(--line-soft);
-  background: rgba(18, 17, 16, 0.5);
-  text-align: left;
-  transition:
-    border-color 0.3s,
-    background 0.3s;
-}
-
-.pay button:hover {
-  border-color: var(--line);
-}
-
-.pay button.is-active {
-  border-color: var(--gold);
-  background: rgba(196, 164, 114, 0.09);
-}
-
-.pay__dot {
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid var(--gold);
-  border-radius: 50%;
-  position: relative;
-}
-
-.pay button.is-active .pay__dot::after {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border-radius: 50%;
-  background: var(--gold);
-}
-
-.pay strong {
-  display: block;
-  font-size: 15px;
-}
-
-.pay small {
-  display: block;
-  font-size: 12.5px;
-  color: var(--muted);
-}
-
-.pix {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 24px;
-}
-
-.pix svg {
-  border: 6px solid #eee7da;
-  border-radius: 4px;
-}
-
-.pix__amount {
-  font-family: var(--font-display);
-  font-size: 54px;
-  font-weight: 400;
-  color: var(--gold-hi);
-}
-
-.pix__code {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 8px 12px;
-  border: 1px dashed var(--line);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--gold-hi);
-  word-break: break-all;
-}
-
-/* -------------------------------- ticket --------------------------------- */
+/* ------------------------------ confirmation ----------------------------- */
 
 .panel--done {
   justify-items: center;
@@ -456,77 +369,6 @@
 
 .panel--done .display {
   font-size: clamp(30px, 4vw, 48px);
-}
-
-.ticket {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  width: 100%;
-  max-width: 560px;
-  text-align: left;
-  background: linear-gradient(135deg, #17140c, #0b0a08);
-}
-
-.ticket__main {
-  display: grid;
-  gap: 10px;
-  padding: 22px 24px;
-}
-
-.ticket__label {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.ticket h4 {
-  font-size: 54px;
-  line-height: 0.95;
-}
-
-.ticket dl {
-  display: grid;
-  gap: 8px;
-  margin: 8px 0 0;
-}
-
-.ticket dl div {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding-top: 8px;
-  border-top: 1px solid var(--line-soft);
-  font-size: 13.5px;
-}
-
-.ticket dt {
-  color: var(--muted);
-}
-
-.ticket dd {
-  margin: 0;
-  font-weight: 600;
-}
-
-.ticket__stub {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: 10px;
-  padding: 20px;
-  border-left: 1px dashed var(--line);
-}
-
-.ticket__stub svg {
-  border: 4px solid #eee7da;
-}
-
-.ticket__stub strong {
-  font-size: 13px;
-  letter-spacing: 0.18em;
-  color: var(--gold-hi);
 }
 
 /* --------------------------------- aside --------------------------------- */
@@ -665,19 +507,26 @@
     font-size: 10px;
     letter-spacing: 0.08em;
   }
+}
 
-  .pix {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
+/* "Sente-se. A mesa é sua." always on a single line, on any screen */
+.reserve .section-head .reserve__title {
+  font-size: clamp(30px, 8.4vw, 104px);
+  white-space: nowrap;
+}
 
-  .ticket {
-    grid-template-columns: 1fr;
-  }
+/* --------------------------- WhatsApp message ---------------------------- */
 
-  .ticket__stub {
-    border-left: 0;
-    border-top: 1px dashed var(--line);
-  }
+.message {
+  width: 100%;
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  background: rgba(10, 10, 9, 0.6);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
