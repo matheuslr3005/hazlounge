@@ -45,33 +45,24 @@ export const buildSeatMessage = (input: {
 }) => {
   const { event, seats, name, whatsapp } = input
   const date = formatEventDate(event.date)
-  return [
-    'Olá, HAZ! Quero reservar minha vaga:',
-    '',
-    `Noite: ${event.title}, ${date.weekday} ${date.short}, ${event.startTime}`,
-    `${seats.length > 1 ? 'Cadeiras' : 'Cadeira'}: ${joinSeats(seats)}`,
-    `Valor: ${formatMoney(event.buyIn * seats.length)}${seats.length > 1 ? ` (${seats.length} × ${formatMoney(event.buyIn)})` : ''}`,
-    `Nome: ${name}`,
-    `WhatsApp: ${whatsapp}`,
-    '',
-    'Como faço o pagamento?',
-  ].join('\n')
+  const price = `${formatMoney(event.buyIn * seats.length)}${seats.length > 1 ? ` (${seats.length} × ${formatMoney(event.buyIn)})` : ''}`
+  return (
+    `Olá, HAZ! Aqui é ${name} (WhatsApp ${whatsapp}). Quero reservar ${seats.length > 1 ? 'as cadeiras' : 'a cadeira'} ${joinSeats(seats)} ` +
+    `na ${event.title} (${date.weekday.toLowerCase()}, ${date.short}, ${event.startTime}), ${price}. ` +
+    'Como faço o pagamento?'
+  )
 }
 
 export const buildRentalMessage = (input: RentalInput) => {
   const [year, month, day] = input.date.split('-')
-  return [
-    'Olá, HAZ! Quero alugar o lounge para o meu jogo:',
-    '',
-    `Data: ${day}/${month}/${year}, às ${input.startTime}`,
-    `Convidados: ${input.guests}`,
-    `Ocasião: ${input.occasion}`,
-    ...(input.interests.length ? [`Interesses: ${input.interests.join(', ')}`] : []),
-    ...(input.message ? [`Detalhes: ${input.message}`] : []),
-    `Nome: ${input.name}`,
-    `WhatsApp: ${input.whatsapp}`,
-    ...(input.email ? [`E-mail: ${input.email}`] : []),
-    '',
-    'Pode me passar disponibilidade e valores?',
-  ].join('\n')
+  const details = [
+    `${input.guests} convidados`,
+    input.occasion.toLowerCase(),
+    ...(input.interests.length ? [`com interesse em ${input.interests.join(', ').toLowerCase()}`] : []),
+  ].join(', ')
+  return (
+    `Olá, HAZ! Aqui é ${input.name} (WhatsApp ${input.whatsapp}${input.email ? `, e-mail ${input.email}` : ''}). ` +
+    `Quero alugar o lounge no dia ${day}/${month}/${year}, às ${input.startTime} (${details}).` +
+    `${input.message ? ` ${input.message}` : ''} Pode me passar disponibilidade e valores?`
+  )
 }
